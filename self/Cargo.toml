@@ -5,7 +5,7 @@ edition = "2018"
 
 authors = ["Luka Teras <luka@sdf.org>"]
 description = "AORURA LED manager library"
-license = "Apache-2.0"
+license = "BSD-2-Clause-Patent"
 repository = "https://github.com/transumption/aorura"
 
 [dependencies]
