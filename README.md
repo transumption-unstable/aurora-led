@@ -2,6 +2,14 @@
 
 AORURA LED library, CLI, and emulator.
 
+## Table of contents
+
+- [Protocol](#protocol)
+- [Library](#library)
+- [CLI](#cli)
+- [Emulator](#emulator)
+- [Hardware](#hardware)
+
 ## Protocol
 
 AORURA exposes a serial connection (19200n8). Every command is exactly two bytes:
