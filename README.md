@@ -1,23 +1,23 @@
 # AORURA
 
-AORURA library, LED manager CLI, and emulator.
+AORURA LED library, CLI, and emulator.
 
 ## Protocol
 
-AORURA exposes serial 19200n8 connection. Every command is exactly two bytes:
+AORURA exposes a serial connection (19200n8). Every command is exactly two bytes:
 
-- `XX` turns off LED
-- `A<` enables signature aurora LED state
-- color byte + `!` causes LED to light up with given color
-- color byte + `*` causes LED to flash with given color at .5s interval
+- `XX` turns the LED off
+- `A<` puts the LED into its signature shimmering "aurora" state
+- a color byte + `!` makes the LED light up with the given color
+- a color byte + `*` makes the LED flash with the given color at a half-second
+  interval
 
-AORURA will respond with `Y` or `N` byte, depending on whether command was
-successfully applied or not, respectively.
+AORURA responds to these commands with one byte: `Y` if successful, `N` if not.
 
-`SS` is a special case command that causes AORURA to respond with command
-representing its current LED state.
+There's one more: `SS`. AORURA responds to this command with two bytes
+representing the command for its current state.
 
-AORURA's initial LED state is flashing blue (`B*`).
+AORURA's initial state is `B*` (flashing blue).
 
 Valid color bytes:
 
@@ -30,8 +30,11 @@ Valid color bytes:
 
 ## Library
 
-[`aorura`](lib) is a Rust crate that implements [AORURA protocol](#protocol).
-Usage example:
+[`aorura`](lib) is a Rust crate that implements [the AORURA protocol](#protocol).
+
+## Usage
+
+### Example
 
 ```rust
 use aorura::*;
@@ -40,8 +43,8 @@ use failure::*;
 fn main() -> Fallible<()> {
   let mut led = Led::open("/dev/ttyUSB0")?;
 
-  led.set(State::Flash(Color::Red))?; // cause LED to flash with red color
-  led.set(State::Off)?; // turn off LED
+  led.set(State::Flash(Color::Red))?;
+  led.set(State::Off)?;
 
   assert_eq!(led.get()?, State::Off);
   assert_eq!(State::try_from(b"B*")?, State::Flash(Color::Blue));
@@ -52,7 +55,9 @@ fn main() -> Fallible<()> {
 
 ## CLI
 
-[`aorura-cli`](cli) is LED manager CLI built on top of [`aorura`](#library).
+[`aorura-cli`](cli) is a CLI built on top of [the library](#library).
+
+### Usage
 
 ```
 Usage: aorura-cli <path> [--set STATE]
@@ -67,7 +72,7 @@ States: aurora, flash:COLOR, off, static:COLOR
 Colors: blue, green, orange, purple, red, yellow
 ```
 
-Usage example:
+#### Example
 
 ```shell
 path=/dev/ttyUSB0
@@ -79,24 +84,25 @@ aorura-cli $path --set flash:yellow
 # Do something time-consuming:
 sleep 10
 
-# Revert back to original LED state:
+# Revert back to the original LED state:
 aorura-cli $path --set $original_state
 ```
 
 ## Emulator
 
 [`aorura-emu`](emu) is a PTY-based AORURA emulator. It can be used with
-[CLI](#cli) in lieu of [compatible hardware](#compatible-hardware). For
-example, this emulator is used to make status LED visible on HoloPortOS VM.
+[the CLI](#cli) in lieu of [the AORURA hardware](#hardware).
+
+### Usage
 
 ```
 Usage: aorura-emu <path>
        aorura-emu --help
 
-Emulates AORURA LED device over a PTY symlinked to given path.
+Emulates AORURA LED device over a PTY symlinked to the given path.
 ```
 
-## Compatible hardware
+## Hardware
 
 - AORURA-3 (HoloPort and HoloPort+)
 
