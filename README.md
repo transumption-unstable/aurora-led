@@ -30,7 +30,7 @@ Valid color bytes:
 
 ## Library
 
-[`aorura`](self) is a Rust crate that implements [AORURA protocol](#protocol).
+[`aorura`](lib) is a Rust crate that implements [AORURA protocol](#protocol).
 Usage example:
 
 ```rust

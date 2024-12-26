@@ -3,5 +3,5 @@
 members = [
   "cli",
   "emu",
-  "self"
+  "lib"
 ]
