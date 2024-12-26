@@ -12,15 +12,17 @@ AORURA LED library, CLI, and emulator.
 
 ## Protocol
 
-AORURA exposes a serial connection (19200n8). Every command is exactly two bytes:
+AORURA communicates via a serial connection (19200n8). All commands it supports
+are exactly two bytes:
 
 - `XX` turns the LED off
 - `A<` puts the LED into its signature shimmering "aurora" state
-- a color byte + `!` makes the LED light up with the given color
-- a color byte + `*` makes the LED flash with the given color at a half-second
-  interval
+- a color byte followed by `!` makes the LED light up with the given color
+- a color byte followed by `*` makes the LED flash with the given color at
+  a half-second interval
 
-AORURA responds to these commands with one byte: `Y` if successful, `N` if not.
+AORURA responds to these commands with a single byte: `Y` if successful, `N`
+if not.
 
 There's one more: `SS`. AORURA responds to this command with two bytes
 representing the command for its current state.
@@ -38,11 +40,13 @@ Valid color bytes:
 
 ## Library
 
-[`aorura`](lib) is a Rust crate that implements [the AORURA protocol](#protocol).
+[`aorura`](lib) is a library that implements [the AORURA protocol](#protocol).
 
-## Usage
+### [Documentation](https://lukateras.github.io/aorura/aorura)
 
-### Example
+### Usage
+
+#### Example
 
 ```rust
 use aorura::*;
@@ -63,7 +67,9 @@ fn main() -> Fallible<()> {
 
 ## CLI
 
-[`aorura-cli`](cli) is a CLI built on top of [the library](#library).
+[`aorura-cli`](cli) is a CLI built on top of [the AORURA library](#library).
+
+### [Documentation](https://lukateras.github.io/aorura/aorura_cli)
 
 ### Usage
 
@@ -71,10 +77,10 @@ fn main() -> Fallible<()> {
 Usage: aorura-cli <path> [--set STATE]
        aorura-cli --help
 
-Gets, and optionally, sets AORURA LED state.
+Gets/sets the AORURA LED state.
 
 Options:
-  --set STATE  set LED to given state
+  --set STATE  set the LED to the given state
 
 States: aurora, flash:COLOR, off, static:COLOR
 Colors: blue, green, orange, purple, red, yellow
@@ -86,20 +92,21 @@ Colors: blue, green, orange, purple, red, yellow
 path=/dev/ttyUSB0
 original_state=$(aorura-cli $path)
 
-# Enable flashing yellow LED:
 aorura-cli $path --set flash:yellow
 
 # Do something time-consuming:
 sleep 10
 
 # Revert back to the original LED state:
-aorura-cli $path --set $original_state
+aorura-cli $path --set "$original_state"
 ```
 
 ## Emulator
 
 [`aorura-emu`](emu) is a PTY-based AORURA emulator. It can be used with
-[the CLI](#cli) in lieu of [the AORURA hardware](#hardware).
+the library or the CLI in lieu of [the hardware](#hardware).
+
+### [Documentation](https://lukateras.github.io/aorura/aorura_emu)
 
 ### Usage
 
@@ -107,7 +114,7 @@ aorura-cli $path --set $original_state
 Usage: aorura-emu <path>
        aorura-emu --help
 
-Emulates AORURA LED device over a PTY symlinked to the given path.
+Emulates AORURA over a PTY symlinked to the given path.
 ```
 
 ## Hardware
